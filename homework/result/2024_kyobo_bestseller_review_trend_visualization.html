@@ -140,7 +140,7 @@
                 document.getElementById('loading').style.display = 'block';
                 
                 // 도서 리스트 데이터 로드 (리뷰 수 정보)
-                const bookListResponse = await fetch('data/kyobo_book_list.csv');
+                const bookListResponse = await fetch('../data/kyobo_book_list.csv');
                 if (!bookListResponse.ok) {
                     throw new Error(`도서 리스트 로드 실패: ${bookListResponse.status}`);
                 }
@@ -254,7 +254,7 @@
                     `도서당 평균 리뷰 수는 ${Math.round(avgReviews).toLocaleString()}개이며, 상위 20개 도서가 전체 리뷰의 ${((top20Books.reduce((a, b) => a + b[1], 0) / totalReviews) * 100).toFixed(1)}%를 차지하고 있습니다.`;
 
                 // 감성 분석을 위한 리뷰 데이터 로드
-                const reviewResponse = await fetch('data/kyobo_book_sentiment_analysis.csv');
+                const reviewResponse = await fetch('../data/kyobo_book_sentiment_analysis.csv');
                 if (!reviewResponse.ok) {
                     throw new Error(`리뷰 데이터 로드 실패: ${reviewResponse.status}`);
                 }
