@@ -2,15 +2,9 @@
 
 ## 1. 분석 시각화 결과
 
-결과보고서(HTML)는 웹서버에서 실행하여 확인할 수 있으며, 아래는 주요 시각화 결과의 스크린샷입니다.
+https://wooyeon83.github.io/kmu-datasience/homework/result/2024_kyobo_bestseller_review_trend_visualization.html
 
-<div style="display: flex; justify-content: space-between;">
-    <img src="images/도서별_트랜드.png" width="32%" alt="도서별 트랜드"/>
-    <img src="images/감성 _트랜드.png" width="32%" alt="감성 트랜드"/>
-    <img src="images/리뷰_트랜드.png" width="32%" alt="리뷰 트랜드"/>
-</div>
-
-## 2. 분석 시각화 결과 html 실행방법
+## 2. 분석 시각화 결과 로컬 html 실행방법
 
 ### 1) 터미널에서 명령어로 웹서버 실행
 ```bash
@@ -38,7 +32,7 @@ homework/
 │   └── prompt.md            # 프롬프트 모음
 ├── data/                    # 데이터 저장 디렉토리
 ├── images/                  # 시각화 결과 이미지 저장
-├── result/                  # 결과 파일 저장, 시각화에 사용할 데이터, 이미지, html 파일 저장
+├── result/                  # 결과 html 파일 저장
 ├── kyobo_book_list_create.py    # 교보문고 베스트셀러 목록 생성
 ├── kyobo_book_scroll.py         # 교보문고 웹 스크롤링
 ├── kyobo_book_reviews_collect.py # 도서 리뷰 수집
@@ -91,6 +85,21 @@ homework/
 - 포트(8000) 충돌 감지 및 해결
 - 웹 서버 자동 실행 및 브라우저 오픈
 - 컨테이너 로그 실시간 확인
+
+### Docker 컨테이너 종료 방법
+1. 터미널에서 컨테이너 종료
+   ```bash
+   docker compose down
+   ```
+
+2. 또는 다음 명령어로 모든 컨테이너 종료
+   ```bash
+   docker stop $(docker ps -q)
+   ```
+
+3. Docker Desktop에서 종료
+   - Docker Desktop의 Containers 탭에서 해당 컨테이너 선택
+   - Stop 버튼 클릭 또는 우클릭 후 'Stop' 선택
 
 ### 문제 해결
 1. "Cannot connect to the Docker daemon" 오류 발생 시

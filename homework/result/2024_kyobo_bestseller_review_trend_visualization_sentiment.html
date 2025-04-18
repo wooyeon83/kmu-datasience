@@ -278,18 +278,19 @@
         function createViolinPlot(data) {
             const processedData = data
                 .map(row => ({
-                    rating: parseInt(row.평점),
+                    rating: row.평점,  // 문자열 그대로 유지
                     sentiment: parseFloat(row.감성점수)
                 }))
-                .filter(d => !isNaN(d.rating) && !isNaN(d.sentiment) && 
+                .filter(d => d.rating && !isNaN(d.sentiment) && 
                            d.sentiment >= -1 && d.sentiment <= 1);
 
-            const ratings = [1, 2, 3, 4, 5];
+            const ratings = ['1', '2', '3', '4', '5'];
             
             const violinData = ratings.map(rating => {
                 const sentiments = processedData
                     .filter(d => d.rating === rating)
                     .map(d => d.sentiment);
+
                 return {
                     type: 'violin',
                     x: sentiments,
@@ -302,7 +303,7 @@
                         visible: true
                     },
                     line: {
-                        color: `hsl(${rating * 40}, 70%, 50%)`
+                        color: `hsl(${parseInt(rating) * 40}, 70%, 50%)`
                     },
                     orientation: 'h',
                     side: 'positive',
@@ -346,25 +347,35 @@
             Plotly.newPlot('violinPlot', violinData, layout);
 
             // 인사이트 업데이트
-            const correlation = calculateCorrelation(
-                processedData.map(d => [d.rating, d.sentiment])
-            );
-
             const avgByRating = ratings.map(rating => {
                 const sentiments = processedData
                     .filter(d => d.rating === rating)
                     .map(d => d.sentiment);
                 return {
                     rating,
-                    avg: sentiments.reduce((a, b) => a + b, 0) / sentiments.length,
-                    count: sentiments.length
+                    avg: sentiments.length > 0 ? sentiments.reduce((a, b) => a + b, 0) / sentiments.length : 0,
+                    count: sentiments.length,
+                    positive: sentiments.filter(s => s > 0).length,
+                    negative: sentiments.filter(s => s < 0).length
                 };
             });
 
+            // 각 평점별 평균 감성 점수 계산
+            const averages = avgByRating.map(r => ({
+                rating: r.rating,
+                avg: r.avg.toFixed(2),
+                positiveRatio: ((r.positive / r.count) * 100).toFixed(1)
+            }));
+
+            // 평균 감성 점수가 가장 높은 평점 찾기
+            const highestAvg = averages.reduce((max, current) => 
+                parseFloat(current.avg) > parseFloat(max.avg) ? current : max
+            );
+
             document.getElementById('violinPlotInsight').textContent = 
-                `평점과 감성 점수의 상관계수는 ${correlation.toFixed(3)}로, 강한 양의 상관관계를 보입니다. ` +
-                `평점이 높을수록 감성 점수도 높아지는 경향이 뚜렷하며, 특히 평점 5점의 경우 평균 감성 점수가 ${avgByRating[4].avg.toFixed(2)}로 가장 높습니다. ` +
-                `이는 평점이 높은 리뷰일수록 긍정적인 감정을 더 강하게 표현한다는 것을 의미합니다.`;
+                `평점별 감성 분석 결과, 평점이 높을수록 긍정적인 감성 점수를 보이는 경향이 있으며, ` +
+                `특히 평점 ${highestAvg.rating}점의 평균 감성 점수가 ${highestAvg.avg}로 가장 높게 나타났습니다. ` +
+                `이는 평점과 감성 표현 사이에 밀접한 연관성이 있음을 보여줍니다.`;
         }
 
         function createTimeSeriesChart(data) {
